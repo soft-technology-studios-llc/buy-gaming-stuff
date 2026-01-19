@@ -174,7 +174,7 @@ color: black;
 <body>
 
 <!-- ===== BURBUJA ===== -->
-<div id="floatingBubble">🎡</div>
+<div id="floatingBubble">❓</div>
 
 <!-- ===== RUETA COMPLETA ===== -->
 <div id="wheelContainer">
@@ -427,10 +427,10 @@ const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
 
 const sections = [
-"500 robux (Free)",
+"💎 500 diamantes ff (Free)",
 "PERDISTE",
-"BONO +25%",
-"Descuento V.I.P"
+"Descuento de robux",
+"Descuento de diamantes free fire"
 ];
 
 const colors = ["#fff4c2","#fff","#f7e35b","#f1d67a"];
@@ -472,7 +472,7 @@ if (!canSpin()) return;
 
 spinning = true;
 
-/* ANGULO PERO IMPOSIBLE QUE CAIGA EN 1,200 ROBUX */
+/* ANGULO PERO IMPOSIBLE QUE CAIGA EN 500 Diamantes*/
 let safeAngles = [1, 2, 3]; // evita el primer sector
 let pick = safeAngles[Math.floor(Math.random()*safeAngles.length)];
 
@@ -538,15 +538,15 @@ r.innerText = "PERDISTE 🙃";
 return;
 }
 
-if (prize === "BONO +25%"){
-r.innerText = "BONO +25% GANADO";
-window.open("https://wa.me/50373826693?text=Gané%20BONO%2025%", "_blank");
+if (prize === "Descuento en robux"){
+r.innerText = "Descuento Robux Win ";
+window.open("https://wa.me/50373826693?text=Obtuve%20Descuento%20robux", "_blank");
 return;
 }
 
-if (prize === "Descuento V.I.P"){
-r.innerText = "RECIBISTE DESCUENTO V.I.P";
-window.open("https://wa.me/50373826693?text=Gané Descuento V.I.P Por $7.99", "_blank");
+if (prize === "Descuento de Diamantes ff"){
+r.innerText = "RECIBISTE DESCUENTO de diamantes";
+window.open("https://wa.me/50373826693?text=Gané Descuento De diamantes Por $7.99", "_blank");
 return;
 }
 
@@ -561,123 +561,6 @@ window.open(
 }
 </script>
 
-<script>
-/* =================================================
-   BLOQUEO POR FECHA MANUAL
-   INICIO DEFINIDO POR TI
-   DURACIÓN: 15 DÍAS
-   USO ÚNICO POR ACTUALIZACIÓN
-   FUNCIONA OFFLINE (file://)
-   ================================================= */
-
-/* ====== CONFIGURACIÓN MANUAL ====== */
-const START_DAY   = 15;   // 👈 DÍA
-const START_MONTH = 1;    // 👈 MES (1 = Enero)
-const START_YEAR  = 2026; // 👈 AÑO
-
-const UPDATE_CODE = "update_robux_v001"; 
-// 👆 CAMBIA ESTE CÓDIGO EN CADA ACTUALIZACIÓN
-// ejemplos: v002, enero15, packA, etc.
-
-/* ================================= */
-
-const DURATION_SECONDS = 15 * 24 * 60 * 60; // 15 días
-
-// Fecha de inicio real
-const START_DATE = new Date(
-  START_YEAR,
-  START_MONTH - 1,
-  START_DAY,
-  0, 0, 0
-);
-
-// Keys únicas (NO se cruzan con otros index)
-const START_KEY   = "inicio_" + UPDATE_CODE;
-const EXPIRED_KEY = "expirado_" + UPDATE_CODE;
-
-// Cronómetro visual
-const timerBox = document.createElement("div");
-timerBox.style.position = "fixed";
-timerBox.style.top = "10px";
-timerBox.style.left = "10px";
-timerBox.style.background = "#000";
-timerBox.style.color = "#00ff88";
-timerBox.style.padding = "6px 10px";
-timerBox.style.fontFamily = "monospace";
-timerBox.style.fontSize = "14px";
-timerBox.style.borderRadius = "6px";
-timerBox.style.zIndex = "9999";
-document.body.appendChild(timerBox);
-
-// Guardar inicio SOLO una vez
-if (!localStorage.getItem(START_KEY)) {
-  localStorage.setItem(START_KEY, START_DATE.getTime());
-}
-
-// Si ya venció este update
-if (localStorage.getItem(EXPIRED_KEY) === "true") {
-  bloquearIndex();
-}
-
-// Actualizar contador
-const interval = setInterval(() => {
-  const now = Date.now();
-  const start = parseInt(localStorage.getItem(START_KEY));
-  const elapsed = Math.floor((now - start) / 1000);
-  const remaining = DURATION_SECONDS - elapsed;
-
-  // Aún no inicia
-  if (elapsed < 0) {
-    timerBox.textContent = "INICIA PRONTO";
-    return;
-  }
-
-  // Vencido
-  if (remaining <= 0) {
-    localStorage.setItem(EXPIRED_KEY, "true");
-    clearInterval(interval);
-    bloquearIndex();
-    return;
-  }
-
-  let r = remaining;
-  const d = Math.floor(r / 86400);
-  r %= 86400;
-  const h = Math.floor(r / 3600);
-  r %= 3600;
-  const m = Math.floor(r / 60);
-  const s = r % 60;
-
-  timerBox.textContent =
-    String(d).padStart(2, "0") + ":" +
-    String(h).padStart(2, "0") + ":" +
-    String(m).padStart(2, "0") + ":" +
-    String(s).padStart(2, "0");
-}, 1000);
-
-// Bloqueo total
-function bloquearIndex() {
-  document.body.innerHTML = `
-    <div style="
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      background:#000;
-      color:#ff4444;
-      font-family:Arial;
-      padding:20px;
-    ">
-      <div>
-        <h1>⛔ INDEX DESACTUALIZADO</h1>
-        <p>Este archivo ya venció.</p>
-        <p>Abre la nueva actualización.</p>
-      </div>
-    </div>
-  `;
-}
-</script>
 
 <style>
 /* ================== BURBUJAS ================== */
