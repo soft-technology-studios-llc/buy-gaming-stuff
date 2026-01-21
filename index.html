@@ -1145,53 +1145,6 @@ nextStep();
 </script>
 <!-- ========= FIN LOADER ========= -->
 
-/* ====== OVERRIDE: ELIMINAR BLANCO → AZUL ====== */
-
-/* Botones blancos */
-button,
-.btn,
-.btn-main{
-  background:linear-gradient(135deg,#00bfff,#007bff) !important;
-  color:#000 !important;
-  box-shadow:0 0 20px rgba(0,191,255,.6) !important;
-}
-
-/* Botones de compra específicos */
-button:contains("Comprar"),
-.buyBtn,
-.buy-button{
-  background:linear-gradient(135deg,#00bfff,#007bff) !important;
-  color:#000 !important;
-}
-
-/* Tarjetas internas (fondo blanco) */
-.card,
-.card *{
-  background-color:transparent;
-}
-
-/* Fondo interno real de la card */
-.card{
-  background:linear-gradient(180deg,#050607,#000000) !important;
-  border:2px solid #00bfff !important;
-  box-shadow:0 0 30px rgba(0,191,255,.4) !important;
-}
-
-/* Textos que aún salen blancos */
-h1,h2,h3,p,span{
-  color:#00bfff;
-}
-
-/* Barra superior */
-.top-bar{
-  background:linear-gradient(90deg,#00bfff,#007bff) !important;
-  color:#000 !important;
-}
-
-/* Precio verde SE QUEDA VERDE */
-.price{
-  color:#00ff6a !important;
-}
 
 <style>
 :root{
@@ -1299,6 +1252,44 @@ body{
 </style>
 </head>
 <body>
+<style>
+/* ====== FIX FINAL: BLANCO → AZUL ====== */
+
+/* Botones que aún salen blancos */
+button{
+  background:linear-gradient(135deg,#00bfff,#007bff) !important;
+  color:#000 !important;
+  box-shadow:0 0 18px rgba(0,191,255,.6) !important;
+}
+
+/* Botones específicos de compra */
+button[class*="comprar"],
+button[class*="stripe"],
+button[class*="whatsapp"]{
+  background:linear-gradient(135deg,#00bfff,#007bff) !important;
+  color:#000 !important;
+}
+
+/* Fondo interno blanco dentro de cards */
+.card{
+  background:linear-gradient(180deg,#050607,#000000) !important;
+  border-color:#00bfff !important;
+}
+
+/* Barra superior que aún se ve clara */
+.top-bar{
+  background:linear-gradient(90deg,#00bfff,#007bff) !important;
+  color:#000 !important;
+}
+
+/* Texto que aún aparece blanco */
+.card h1,
+.card h2,
+.card p,
+.card span{
+  color:#00bfff !important;
+}
+</style>
 
 <!-- ===== POINTS HUD ===== -->
 <div id="topPoints">PointsHub<span id="robuxValue">0</span></div>
