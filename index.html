@@ -696,72 +696,82 @@ function vipWhats(vip,precio){
 </body>
 </html>
 
+
 <style>
-/* ========= OVERRIDE BLANCO + GRIS ========= */
+/* ========= PALETA AZUL + NEGRO ========= */
 :root{
-  --main-white:#ffffff;
-  --soft-gray:#bfc3c7;
-  --dark-gray:#1a1c1e;
+  --pure-black:#000000;
+  --deep-black:#050607;
+  --dark-black:#0a0b0d;
+
+  --neon-blue:#00bfff;
+  --electric-blue:#007bff;
+  --dark-blue:#0a1f33;
 }
 
 /* BURBUJA */
 #floatingBubble{
-  background:linear-gradient(135deg,var(--main-white),var(--soft-gray)) !important;
-  box-shadow:0 0 22px rgba(255,255,255,.6) !important;
+  background:linear-gradient(135deg,var(--neon-blue),var(--electric-blue)) !important;
+  box-shadow:0 0 22px rgba(0,191,255,.9) !important;
 }
 
 /* OVERLAY RULETA */
 #wheelContainer{
-  background:radial-gradient(circle at top,#2a2d30,#050606) !important;
+  background:radial-gradient(circle at top,var(--dark-blue),var(--pure-black)) !important;
 }
 
 /* CAJA RULETA */
 #wheelBox{
-  background:linear-gradient(160deg,#1b1d1f,#0b0c0d) !important;
-  box-shadow:0 0 35px rgba(255,255,255,.25) !important;
+  background:linear-gradient(160deg,var(--dark-black),var(--deep-black)) !important;
+  box-shadow:0 0 35px rgba(0,191,255,.4) !important;
 }
 
 /* RULETA */
 #wheel{
-  border-color:var(--soft-gray) !important;
+  border-color:var(--neon-blue) !important;
   box-shadow:
-    0 0 22px rgba(255,255,255,.55),
-    inset 0 0 25px rgba(255,255,255,.25) !important;
+    0 0 26px rgba(0,191,255,.85),
+    inset 0 0 30px rgba(0,191,255,.25) !important;
 }
 
 /* FLECHA */
 #pointer{
-  color:var(--main-white) !important;
-  text-shadow:0 0 10px rgba(255,255,255,.7) !important;
+  color:var(--neon-blue) !important;
+  text-shadow:0 0 14px rgba(0,191,255,1) !important;
 }
 
 /* BOTÓN GIRAR */
 #spinBtn{
-  background:linear-gradient(135deg,var(--main-white),var(--soft-gray)) !important;
+  background:linear-gradient(135deg,var(--neon-blue),var(--electric-blue)) !important;
   color:#000 !important;
-  box-shadow:0 0 18px rgba(255,255,255,.55) !important;
+  box-shadow:0 0 25px rgba(0,191,255,1) !important;
 }
 
 /* RESULTADO */
 #result{
-  color:var(--main-white) !important;
+  color:var(--neon-blue) !important;
+  text-shadow:0 0 10px rgba(0,191,255,.8);
 }
 
 /* CASILLAS */
 .buyBox{
-  background:linear-gradient(145deg,#1c1f22,#141618) !important;
-  border-color:var(--soft-gray) !important;
-  color:var(--main-white) !important;
+  background:linear-gradient(145deg,var(--dark-blue),var(--pure-black)) !important;
+  border-color:var(--neon-blue) !important;
+  color:var(--neon-blue) !important;
+  box-shadow:0 0 18px rgba(0,191,255,.4);
 }
 
 /* BUNDLES */
 .bundle{
-  border-color:var(--main-white) !important;
-  box-shadow:0 0 18px rgba(255,255,255,.25) !important;
+  background:linear-gradient(160deg,var(--dark-blue),var(--pure-black)) !important;
+  border-color:var(--neon-blue) !important;
+  box-shadow:0 0 22px rgba(0,191,255,.5) !important;
 }
-.bundle h2{ color:var(--soft-gray) !important; }
+.bundle h2{
+  color:var(--neon-blue) !important;
+}
 .bundle button{
-  background:linear-gradient(135deg,var(--main-white),var(--soft-gray)) !important;
+  background:linear-gradient(135deg,var(--neon-blue),var(--electric-blue)) !important;
   color:#000 !important;
 }
 
@@ -769,8 +779,9 @@ function vipWhats(vip,precio){
 .modal-box,
 .vip-card,
 .vip-pay-card{
-  border-color:var(--soft-gray) !important;
-  box-shadow:0 0 25px rgba(255,255,255,.35) !important;
+  background:linear-gradient(160deg,var(--dark-blue),var(--pure-black)) !important;
+  border-color:var(--neon-blue) !important;
+  box-shadow:0 0 30px rgba(0,191,255,.6) !important;
 }
 </style>
 
