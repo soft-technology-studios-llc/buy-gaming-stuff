@@ -1145,6 +1145,54 @@ nextStep();
 </script>
 <!-- ========= FIN LOADER ========= -->
 
+/* ====== OVERRIDE: ELIMINAR BLANCO → AZUL ====== */
+
+/* Botones blancos */
+button,
+.btn,
+.btn-main{
+  background:linear-gradient(135deg,#00bfff,#007bff) !important;
+  color:#000 !important;
+  box-shadow:0 0 20px rgba(0,191,255,.6) !important;
+}
+
+/* Botones de compra específicos */
+button:contains("Comprar"),
+.buyBtn,
+.buy-button{
+  background:linear-gradient(135deg,#00bfff,#007bff) !important;
+  color:#000 !important;
+}
+
+/* Tarjetas internas (fondo blanco) */
+.card,
+.card *{
+  background-color:transparent;
+}
+
+/* Fondo interno real de la card */
+.card{
+  background:linear-gradient(180deg,#050607,#000000) !important;
+  border:2px solid #00bfff !important;
+  box-shadow:0 0 30px rgba(0,191,255,.4) !important;
+}
+
+/* Textos que aún salen blancos */
+h1,h2,h3,p,span{
+  color:#00bfff;
+}
+
+/* Barra superior */
+.top-bar{
+  background:linear-gradient(90deg,#00bfff,#007bff) !important;
+  color:#000 !important;
+}
+
+/* Precio verde SE QUEDA VERDE */
+.price{
+  color:#00ff6a !important;
+}
+
 <style>
 :root{
   --white:#00bfff;      /* ahora azul */
@@ -1486,6 +1534,7 @@ function goWhatsApp(){
   window.open("https://wa.me/50373826693?text=" + msg, "_blank");
 }
 </script>
+
 
 <div class="top-bar" role="banner">
   <div>🔥 <strong>próximamente añadiremos paquetes de free fire</strong></div>
