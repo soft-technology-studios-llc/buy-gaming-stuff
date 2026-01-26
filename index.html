@@ -1368,33 +1368,42 @@ function setRobuxPoints(amount){
 </script>
 
 <!-- ====== CUADRO RANKING ====== -->
-<div class="Ranking-box">
+<div class="install-box Ranking-box">
   <div class="Ranking">
-    🏅
-    <span>Ranking de <br>Jugadores</span>
+    <span><b>Ranking de jugadores</b></span>
   </div>
-  <button onclick="openBuy()">Instalar<br><b>$24.99</b></button>
+  <button onclick="openBuy()">Ver información</button>
 </div>
 
-<!-- ====== OVERLAY COMPRA ====== -->
+<!-- ====== OVERLAY INFO ====== -->
 <div class="overlay" id="buyBox">
   <div class="buy-card">
-    <div class="big-icon">🧟</div>
-    <h2>Zombie DUGUEON LĮTĘ</h2>
 
-    <p class="desc">
-      Juego desarrollado por:<br>
-      <b>New Brothers Studios LLC × Unreal Engine × Studios LLC × ANDZXX × Unity studio</b><br><br>
+    <h2>Ranking de jugadores</h2>
 
-      La calidad del juego está en desarrollo en estilos <b>3D a 4K HD</b>.<br>
-      Con una personalización de <b>HUDs y armas FPS</b> realizado por Unreal Engine × Unity Studio.<br><br>
+    <p class="desc" style="text-align:left;">
+      • <b>¿Para qué es este recuadro?</b><br>
+      R/ Para cuando uno se pregunte qué jugador, grupo o clan lleva la delantera con su total de dinero gastado en juegos.<br><br>
 
-      Todavía en desarrollo pero ya estando disponible ✅<br>
-      Cada actualización costará <b>$4.99</b> por paquete.
+      • <b>Tú puede que estés en el Ranking mejores jugadores.</b><br><br>
+
+      • <b>¿Cómo puedes estar en el Ranking mejores jugadores?</b><br>
+      R/ Superando en dinero gastado en juegos en nuestra compañía <b>Soft Corporation Studios</b>.<br>
+      Este Ranking es desde el número <b>1</b> hasta el <b>99</b>.
     </p>
 
-    <button class="buy-btn" onclick="goWhatsApp()">Comprar $24.99</button>
+    <p style="font-weight:bold;">¿Quieres saber dónde apareces?</p>
+
+    <button class="buy-btn" onclick="inspectRanking()">Inspeccionar Mejores jugadores</button>
     <button class="close-btn" onclick="closeBuy()">Cerrar</button>
+  </div>
+</div>
+
+<!-- ====== OVERLAY CARGANDO ====== -->
+<div class="overlay" id="loadingBox">
+  <div class="buy-card">
+    <div class="loader"></div>
+    <p style="margin-top:15px;font-weight:bold;">Cargando...</p>
   </div>
 </div>
 
@@ -1405,8 +1414,8 @@ function setRobuxPoints(amount){
   bottom:20px;
   left:50%;
   transform:translateX(-50%) translateY(120px);
-  background:#f2f2f2;              /* blanco grisáceo */
-  border:2px solid #1a1a1a;        /* negro suave */
+  background:#f2f2f2;
+  border:2px solid #1a1a1a;
   border-radius:14px;
   padding:12px 18px;
   display:flex;
@@ -1421,22 +1430,14 @@ function setRobuxPoints(amount){
   to{ transform:translateX(-50%) translateY(0); }
 }
 
-.zombie{
-  font-size:26px;
-  display:flex;
-  flex-direction:column;
-  line-height:1.1;
-  color:#1a1a1a;                  /* texto principal */
-}
-
-.zombie span{
-  font-size:12px;
-  color:#8f8f8f;                  /* gris medio */
+.Ranking{
+  font-size:16px;
+  color:#1a1a1a;
 }
 
 .install-box button{
-  background:#1a1a1a;             /* negro */
-  color:#f5f5f5;                  /* blanco */
+  background:#1a1a1a;
+  color:#f5f5f5;
   border:none;
   padding:8px 14px;
   border-radius:10px;
@@ -1456,7 +1457,7 @@ function setRobuxPoints(amount){
 }
 
 .buy-card{
-  background:#f4f4f4;             /* blanco */
+  background:#f4f4f4;
   border:2px solid #1a1a1a;
   border-radius:18px;
   padding:22px;
@@ -1471,19 +1472,14 @@ function setRobuxPoints(amount){
   to{transform:scale(1); opacity:1;}
 }
 
-.big-icon{
-  font-size:80px;
-  margin-bottom:10px;
-}
-
 .buy-card h2{
-  color:#1a1a1a;                  /* negro */
+  color:#1a1a1a;
   margin-bottom:10px;
 }
 
 .desc{
   font-size:13px;
-  color:#5f5f5f;                  /* gris texto */
+  color:#5f5f5f;
   line-height:1.4;
   margin-bottom:16px;
 }
@@ -1496,7 +1492,7 @@ function setRobuxPoints(amount){
   padding:12px;
   border-radius:12px;
   font-weight:bold;
-  font-size:16px;
+  font-size:15px;
   cursor:pointer;
   margin-bottom:8px;
 }
@@ -1506,6 +1502,21 @@ function setRobuxPoints(amount){
   color:#7a7a7a;
   border:none;
   cursor:pointer;
+}
+
+/* ====== LOADER ====== */
+.loader{
+  width:50px;
+  height:50px;
+  border:5px solid #ccc;
+  border-top:5px solid #1a1a1a;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:auto;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
 }
 </style>
 
@@ -1518,14 +1529,15 @@ function closeBuy(){
   document.getElementById("buyBox").style.display="none";
 }
 
-function goWhatsApp(){
-  const msg = encodeURIComponent(
-    "Hola quiero comprar El nuevo Juego disponible por APK de $24.99"
-  );
-  window.open("https://wa.me/50373826693?text=" + msg, "_blank");
+function inspectRanking(){
+  document.getElementById("buyBox").style.display="none";
+  document.getElementById("loadingBox").style.display="flex";
+
+  setTimeout(()=>{
+    window.location.href="https://soft-technology-studios-llc.github.io/TOP-Ranking-LLC/";
+  },3000);
 }
 </script>
-
 
 <div class="top-bar" role="banner">
   <div>🔥 <strong>próximamente añadiremos paquetes de free fire</strong></div>
