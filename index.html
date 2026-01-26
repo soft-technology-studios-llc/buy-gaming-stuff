@@ -1370,7 +1370,7 @@ function setRobuxPoints(amount){
 <!-- ====== CUADRO RANKING ====== -->
 <div class="install-box Ranking-box">
   <div class="Ranking">
-    <span><b>Ranking de jugadores</b></span>
+    <span>Ranking de jugadores</span>
   </div>
   <button onclick="openBuy()">Ver información</button>
 </div>
@@ -1388,13 +1388,17 @@ function setRobuxPoints(amount){
       • <b>Tú puede que estés en el Ranking mejores jugadores.</b><br><br>
 
       • <b>¿Cómo puedes estar en el Ranking mejores jugadores?</b><br>
-      R/ Superando en dinero gastado en juegos en nuestra compañía <b>Soft Corporation Studios</b>.<br>
+      R/ Superando en dinero gastado en juegos en nuestra compañía 
+      <b>Soft Corporation Studios</b>.<br>
       Este Ranking es desde el número <b>1</b> hasta el <b>99</b>.
     </p>
 
-    <p style="font-weight:bold;">¿Quieres saber dónde apareces?</p>
+    <p style="font-weight:bold;color:#c89b3c;">¿Quieres saber dónde apareces?</p>
 
-    <button class="buy-btn" onclick="inspectRanking()">Inspeccionar Mejores jugadores</button>
+    <button class="buy-btn" onclick="inspectRanking()">
+      Inspeccionar Mejores jugadores
+    </button>
+
     <button class="close-btn" onclick="closeBuy()">Cerrar</button>
   </div>
 </div>
@@ -1408,21 +1412,21 @@ function setRobuxPoints(amount){
 </div>
 
 <style>
-/* ====== CUADRO INFERIOR ====== */
+/* ====== CAJA RANKING ====== */
 .install-box{
   position:fixed;
   bottom:20px;
   left:50%;
   transform:translateX(-50%) translateY(120px);
-  background:#f2f2f2;
-  border:2px solid #1a1a1a;
+  background:linear-gradient(135deg,#0b1a2a,#132b44);
+  border:2px solid #0aa8ff;
   border-radius:14px;
   padding:12px 18px;
   display:flex;
   align-items:center;
   gap:14px;
   animation:slideUp .8s ease forwards;
-  box-shadow:0 0 25px rgba(0,0,0,.25);
+  box-shadow:0 0 25px rgba(10,168,255,.45);
   z-index:999;
 }
 
@@ -1430,14 +1434,15 @@ function setRobuxPoints(amount){
   to{ transform:translateX(-50%) translateY(0); }
 }
 
-.Ranking{
+.Ranking span{
   font-size:16px;
-  color:#1a1a1a;
+  font-weight:bold;
+  color:#f5c76a;
 }
 
 .install-box button{
-  background:#1a1a1a;
-  color:#f5f5f5;
+  background:linear-gradient(135deg,#0aa8ff,#057fd1);
+  color:#0b1a2a;
   border:none;
   padding:8px 14px;
   border-radius:10px;
@@ -1445,7 +1450,7 @@ function setRobuxPoints(amount){
   cursor:pointer;
 }
 
-/* ====== OVERLAY ====== */
+/* ====== OVERLAYS ====== */
 .overlay{
   position:fixed;
   inset:0;
@@ -1457,8 +1462,8 @@ function setRobuxPoints(amount){
 }
 
 .buy-card{
-  background:#f4f4f4;
-  border:2px solid #1a1a1a;
+  background:linear-gradient(160deg,#f0f0f0,#d9d9d9);
+  border:2px solid #0aa8ff;
   border-radius:18px;
   padding:22px;
   width:90%;
@@ -1473,20 +1478,20 @@ function setRobuxPoints(amount){
 }
 
 .buy-card h2{
-  color:#1a1a1a;
+  color:#c89b3c;
   margin-bottom:10px;
 }
 
 .desc{
   font-size:13px;
-  color:#5f5f5f;
+  color:#2f2f2f;
   line-height:1.4;
   margin-bottom:16px;
 }
 
 .buy-btn{
-  background:#1a1a1a;
-  color:#ffffff;
+  background:linear-gradient(135deg,#0aa8ff,#057fd1);
+  color:#0b1a2a;
   border:none;
   width:100%;
   padding:12px;
@@ -1499,7 +1504,7 @@ function setRobuxPoints(amount){
 
 .close-btn{
   background:none;
-  color:#7a7a7a;
+  color:#6a6a6a;
   border:none;
   cursor:pointer;
 }
@@ -1509,7 +1514,7 @@ function setRobuxPoints(amount){
   width:50px;
   height:50px;
   border:5px solid #ccc;
-  border-top:5px solid #1a1a1a;
+  border-top:5px solid #0aa8ff;
   border-radius:50%;
   animation:spin 1s linear infinite;
   margin:auto;
@@ -1517,6 +1522,10 @@ function setRobuxPoints(amount){
 
 @keyframes spin{
   to{ transform:rotate(360deg); }
+}
+
+#loadingBox p{
+  color:#f5c76a;
 }
 </style>
 
@@ -1534,9 +1543,21 @@ function inspectRanking(){
   document.getElementById("loadingBox").style.display="flex";
 
   setTimeout(()=>{
-    window.location.href="https://soft-technology-studios-llc.github.io/TOP-Ranking-LLC/";
+    window.location.href =
+    "https://soft-technology-studios-llc.github.io/TOP-Ranking-LLC/";
   },3000);
 }
+
+/* ====== FIX OVERLAY PEGADO AL REGRESAR ====== */
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    const buyBox = document.getElementById("buyBox");
+    const loadingBox = document.getElementById("loadingBox");
+
+    if (buyBox) buyBox.style.display = "none";
+    if (loadingBox) loadingBox.style.display = "none";
+  }
+});
 </script>
 
 <div class="top-bar" role="banner">
