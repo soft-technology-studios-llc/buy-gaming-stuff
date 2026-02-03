@@ -1,3 +1,5 @@
+ 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,778 +13,251 @@
 <meta name="google-site-verification" content="vD1F80dNjXhWhgxG7U8fRYBPnhG6ThwzzU76gc9pDGc"/>
 <style>
 
-/* ===== BURBUJA FLOTANTE ===== */
-#floatingBubble {
-position: fixed;
-right: 20px;
-bottom: 20px;
-width: 70px;
-height: 70px;
-border-radius: 50%;
-background: gold;
-box-shadow: 0 0 18px rgba(255,215,0,0.8);
-display: flex;
-justify-content: center;
-align-items: center;
-cursor: pointer;
-animation: bubbleFloat 3s infinite ease-in-out;
-z-index: 99999;
-font-size: 30px;
-}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-/* Animación burbuja */
-@keyframes bubbleFloat {
-0% { transform: translateY(0); }
-50% { transform: translateY(-10px); }
-100% { transform: translateY(0); }
-}
+    :root {
+        --neon-blue: #00e5ff;
+        --electric-pink: #ff0055;
+        --gold: #ffcc00;
+        --bg-dark: #02040a;
+    }
 
-/* ===== CONTENEDOR COMPLETO ===== */
-#wheelContainer {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(120,0,0,0.88); /* rojo pálido oscuro */
-display: none;
-justify-content: center;
-align-items: center;
-flex-direction: column;
-z-index: 100000;
-padding: 20px;
-}
+    body {
+        background-color: var(--bg-dark);
+        color: white;
+        font-family: 'Orbitron', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+    }
 
-/* Botón salir */
-#closeWheel {
-position: absolute;
-top: 15px;
-right: 15px;
-background: black;
-color: white;
-padding: 10px 15px;
-border-radius: 10px;
-font-size: 16px;
-cursor: pointer;
-z-index: 200000;
-}
+    /* BARRA DE TOKENS (IZQUIERDA) */
+    .token-bar {
+        position: fixed; top: 15px; left: 0;
+        background: var(--neon-blue); color: #000;
+        padding: 10px 20px; border-radius: 0 20px 20px 0;
+        font-weight: bold; z-index: 1000; font-size: 14px;
+        box-shadow: 0 0 15px var(--neon-blue);
+    }
 
-/* Caja central */
-#wheelBox {
-background: #ffb3b3;
-padding: 20px;
-border-radius: 20px;
-text-align: center;
-width: 90%;
-max-width: 430px;
-animation: popIn 0.4s ease;
-position: relative;
-}
+    /* BURBUJAS FLOTANTES */
+    .bubble {
+        position: fixed; right: 26px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; z-index: 999;
+    }
+    #btn-wheel { bottom: 120px; width: 80px; height: 80px; background: linear-gradient(135deg, var(--neon-blue), #007bb5); font-size: 35px; box-shadow: 0 0 20px var(--neon-blue); }
+    #btn-key { bottom: 40px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--gold), #ff6600); font-size: 25px; box-shadow: 0 0 15px #ff6600; }
 
-/* Animación entrada */
-@keyframes popIn {
-0% { transform: scale(0.6); opacity: 0; }
-100% { transform: scale(1); opacity: 1; }
-}
+    /* OVERLAY RULETA */
+    #overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+        display: none; justify-content: center; align-items: flex-start;
+        z-index: 10000; overflow-y: auto; padding: 20px 0;
+    }
 
-/* ===== RULETA ===== */
-#wheel {
-width: 300px;
-height: 300px;
-border-radius: 50%;
-border: 10px solid gold;
-box-shadow: 0 0 15px gold, inset 0 0 20px rgba(255,215,0,0.7);
-margin: 0 auto;
-display: block;
-}
+    #container {
+        position: relative; width: 90%; max-width: 400px;
+        background: #0a0f1e; padding: 20px; border-radius: 30px;
+        border: 2px solid var(--neon-blue); text-align: center;
+        margin: auto;
+    }
 
-/* Flecha derecha */
-#pointer {
-position: absolute;
-right: -40px;
-top: 50%;
-transform: translateY(-50%);
-font-size: 55px;
-font-weight: bold;
-color: red;
-text-shadow: 0 0 6px black;
+    /* LA FLECHA INDICADORA (FIJA ARRIBA) */
+    #arrow-indicator {
+    position: absolute;
+    top: 55px; /* Esto la baja para que no tape el botón [ CERRAR ] */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 40px solid #ff0055; /* Color Rosa Neón */
+    z-index: 11000;
+    filter: drop-shadow(0 0 10px #ff0055);
 }
+    canvas {
+        width: 100%; max-width: 320px; height: auto;
+        border-radius: 50%; border: 10px solid #111;
+        margin-top: 25px; /* Espacio para que la flecha no tape el centro */
+    }
 
-/* Botón girar */
-#spinBtn {
-margin-top: 20px;
-padding: 12px 25px;
-font-size: 20px;
-background: gold;
-border: none;
-border-radius: 10px;
-font-weight: bold;
-cursor: pointer;
-}
+    /* BOTON GIRAR */
+    .spin-btn {
+        background: #00bfff; border: none; padding: 18px;
+        width: 100%; border-radius: 15px; color: #000;
+        font-weight: bold; font-size: 20px; margin-top: 20px;
+        text-transform: uppercase; box-shadow: 0 0 15px #00bfff;
+    }
 
-/* Contador */
-#cooldown {
-font-size: 18px;
-margin-top: 10px;
-color: black;
-font-weight: bold;
-}
+    /* FILA DE 2 EN 2 (BUNDLES) */
+    .bundle-grid {
+        margin-top: 25px;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* DOS COLUMNAS */
+        gap: 10px;
+    }
 
-/* ===== CASILLAS ===== */
-#scrollArea {
-margin-top: 20px;
-height: 230px;
-overflow-y: scroll;
-padding-right: 10px;
-}
-
-.buyBox {
-background: #0057ff;
-border: 2px solid yellow;
-border-radius: 12px;
-padding: 10px;
-text-align: center;
-color: yellow;
-margin-bottom: 15px;
-animation: zoomLoop 4s infinite ease-in-out;
-cursor: pointer;
-}
-
-/* Zoom animación */
-@keyframes zoomLoop {
-0% { transform: scale(1); }
-50% { transform: scale(1.07); }
-100% { transform: scale(1); }
-}
-
-/* Texto */
-.buyBox span {
-display: block;
-font-weight: bold;
-}
-
-/* Resultado */
-#result {
-font-size: 22px;
-margin-top: 12px;
-font-weight: bold;
-color: black;
-}
-
+    .bundle-card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--neon-blue);
+        border-radius: 12px; padding: 15px;
+        text-align: center;
+    }
+    .bundle-card b { display: block; color: var(--neon-blue); font-size: 14px; }
+    .bundle-card span { font-size: 11px; color: #aaa; }
 </style>
 </head>
 <body>
 
-<!-- ===== BURBUJA ===== -->
-<div id="floatingBubble">❓</div>
+<div class="token-bar">TOKENS: <span id="tk-val">0</span></div>
 
-<!-- ===== RUETA COMPLETA ===== -->
-<div id="wheelContainer">
+<div id="btn-wheel" class="bubble" onclick="openWheel()">🎡</div>
+<div id="btn-key" class="bubble" onclick="openKey()">🔐</div>
 
-<div id="closeWheel">Salir de la ruleta</div>
+<div id="overlay">
+    <div id="container">
+        <div onclick="openWheel()" style="color:red; cursor:pointer; font-weight:bold; font-size:12px; margin-bottom: 10px;">[ CERRAR ]</div>
+        
+        <div id="arrow-indicator"></div>
 
-<div id="pointer">→</div>
 
-<div id="wheelBox">
+       
+        <canvas id="canvas" width="500" height="500"></canvas>
+        
+        <div id="status-msg" style="margin-top:15px; color:var(--neon-blue); font-size:14px; font-weight:bold; height:20px;"></div>
+        
+        <button class="spin-btn" onclick="startSpin()">GIRAR ×2 TOKENS</button>
 
-<canvas id="wheel" width="300" height="300"></canvas>
-
-<button id="spinBtn">GIRAR ×1 suerte 🍀</button>
-
-<div id="cooldown"></div>
-<div id="result"></div>
-
-<!-- CASILLAS CON SCROLL -->
-<div id="scrollArea">
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bundles</title>
-
-<style>
-body {
-  background: #0a0a0a;
-  color: white;
-  font-family: Arial;
-  padding: 20px;
-}
-
-/* Cards */
-.bundle {
-  background: #111;
-  border-radius: 15px;
-  padding: 15px;
-  margin: 15px 0;
-  border: 2px solid #00ff88;
-  box-shadow: 0 0 10px #00ff8855;
-}
-
-.bundle h2 {
-  margin: 0 0 10px;
-  color: #00ff88;
-}
-
-.bundle button {
-  margin-top: 10px;
-  padding: 10px;
-  font-size: 18px;
-  width: 100%;
-  background: #00ff88;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.bundle button:hover {
-  background: #00cc66;
-}
-
-/* MODAL Gamer */
-#paymentModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000000cc;
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-box {
-  background: #1a1a1a;
-  padding: 20px;
-  border-radius: 15px;
-  width: 85%;
-  max-width: 350px;
-  text-align: center;
-  border: 2px solid #00ff88;
-  box-shadow: 0 0 20px #00ff8866;
-  animation: pop .3s ease;
-}
-
-@keyframes pop {
-  0% { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.pay-btn {
-  background: #0088ff;
-  margin-top: 10px;
-  padding: 12px;
-  border: none;
-  width: 100%;
-  border-radius: 10px;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.pay-btn:hover { background: #0066cc; }
-
-.ws-btn {
-  background: #25D366;
-  margin-top: 10px;
-  padding: 12px;
-  border: none;
-  width: 100%;
-  border-radius: 10px;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.ws-btn:hover { background: #1ea955; }
-
-.close-btn {
-  margin-top: 15px;
-  color: red;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Bundles</h1>
-
-<!-- BUNDLE LIST -->
-<div class="bundle">
-  <h2>10 Spins + Luck ×6 🍀</h2>
-  <button onclick="openPayment(1)">Comprar $6.99</button>
-</div>
-
-<div class="bundle">
-  <h2>Premio asegurado + 12 Giros</h2>
-  <button onclick="openPayment(2)">Comprar $7.49</button>
-</div>
-
-<div class="bundle">
-  <h2>5 Spins + Luck ×4 🍀</h2>
-  <button onclick="openPayment(3)">Comprar $2.99</button>
-</div>
-
-<div class="bundle">
-  <h2>22 Spins + Luck ×12 🍀</h2>
-  <button onclick="openPayment(4)">Comprar $7.99</button>
-</div>
-
-<div class="bundle">
-  <h2>3 Spins + Luck ×3 🍀</h2>
-  <button onclick="openPayment(5)">Comprar $1.49</button>
-</div>
-
-<div class="bundle">
-  <h2>4 Spins + Luck ×2 🍀</h2>
-  <button onclick="openPayment(6)">Comprar $0.99</button>
-</div>
-
-<div class="bundle">
-  <h2>Membresía V.I.P</h2>
-  <button onclick="openPayment(7)">Comprar $8.99</button>
-</div>
-
-<!-- MODAL -->
-<div id="paymentModal">
-  <div class="modal-box">
-    <h2>🔥 ELIGE TU MÉTODO 🔥</h2>
-
-    <button id="payPalBtn" class="pay-btn">💳 PayPal</button>
-    <button id="wsBtn" class="ws-btn">🟢 WhatsApp</button>
-
-    <div class="close-btn" onclick="closePayment()">Cerrar</div>
-  </div>
+        <div class="bundle-grid" id="bundle-list"></div>
+    </div>
 </div>
 
 <script>
-// TU NUMERO
-const NUM = "50373826693";
+    const KEY_SISTEMA = "VERSION_Móvil_FLECHA_V1";
+    const WHATSAPP = "50373826693";
+    let rotation = 0;
+    let isSpinning = false;
 
-// LINKS PAYPAL (TÚ LOS PEGAS)
-const paypalLinks = {
-  1: "https://www.paypal.com/ncp/payment/AQHFXUT46Z37L",
-  2: "https://www.paypal.com/ncp/payment/9H95XSQK5N5BA",
-  3: "https://www.paypal.com/ncp/payment/DAE5MQEAFM45G",
-  4: "https://www.paypal.com/ncp/payment/PWV7Z7NQ2EDBW",
-  5: "https://www.paypal.com/ncp/payment/3CJXRAWN2X7B6",
-  6: "https://www.paypal.com/ncp/payment/SJKT7M9YS2HAY",
-  7: "https://www.paypal.com/ncp/payment/UUZ7FHSUMTDGJ"
-};
+    // Control de Versión / Reinicio
+    if(localStorage.getItem("v_key") !== KEY_SISTEMA){
+        localStorage.clear();
+        localStorage.setItem("v_key", KEY_SISTEMA);
+    }
 
-let currentBundle = 0;
+    let tokens = parseInt(localStorage.getItem("tks")) || 0;
+    function sync() { document.getElementById("tk-val").innerText = tokens; localStorage.setItem("tks", tokens); }
+    sync();
 
-function openPayment(id) {
-  currentBundle = id;
-  document.getElementById("paymentModal").style.display = "flex";
+    // Inyectar Bundles 2x2
+    const packs = [{p: 0.99, t: 1}, {p: 1.90, t: 2}, {p: 2.80, t: 3}, {p: 3.80, t: 4}, {p: 4.99, t: 5}, {p: 5.99, t: 6}, {p: 6.99, t: 7}, {p: 7.85, t: 8}, {p: 8.95, t: 9}, {p: 9.99, t: 10}, {p: 12.99, t: 14}, {p: 14.99, t: 19}, {p: 16.99, t: 20}, {p: 17.85, t: 23}, {p: 19.99, t: 25}];
+    const bundleList = document.getElementById("bundle-list");
+    packs.forEach(p => {
+        bundleList.innerHTML += `
+            <div class="bundle-card" onclick="window.open('https://wa.me/${WHATSAPP}?text=Compro ${p.t} Tokens')">
+                <b>${p.t} TOKENS</b>
+                <span>$${p.p} USD</span>
+            </div>
+        `;
+    });
+
+    // Función de Canje
+    function openKey() {
+        let code = prompt("🔐 INGRESA TU CÓDIGO:");
+        const CODES = {"AZ1278898":1,"AX1376123":2,"AB1772132":3,"AM1381243":4,"HZ19371221":5,"JA18627182":6,"AL186213313":12,"NEW8137812":16,"AV193812321":22,"AQ1371319318":32,"AP103819381":92};
+        let used = JSON.parse(localStorage.getItem("used")) || [];
+        if(used.includes(code)) return alert("Código ya usado.");
+        if(CODES[code]) {
+            tokens += CODES[code];
+            used.push(code);
+            localStorage.setItem("used", JSON.stringify(used));
+            sync();
+            alert("¡Tokens añadidos!");
+        } else { if(code) alert("Código inválido."); }
+    }
+
+    // Dibujar Ruleta
+    const cvs = document.getElementById("canvas");
+    const ctx = cvs.getContext("2d");
+    const sectors = [
+        {n: "40 Robux", prob: 0.01, c: "#ff0000"}, {n: "100 Diamantes", prob: 0.00001, c: "#00ff00"}, 
+        {n: "Premium Bronce", prob: 0.05, c: "#ff00ff"}, {n: "Premium Bronce V", prob: 0.05, c: "#ffff00"}, 
+        {n: "Desc. VIP Ultra", prob: 0.07, c: "#00ffff"}, {n: "Bono +10%", prob: 0.40, c: "#ff8000"}, 
+        {n: "Bono +15%", prob: 0.50, c: "#7f00ff"}, {n: "Bono +25%", prob: 0.45, c: "#0000ff"},
+        {n: "80 Robux", prob: 0, c: "#333"}, {n: "500 Robux", prob: 0, c: "#222"}, {n: "500 Diamantes", prob: 0, c: "#111"}
+    ];
+
+    function draw() {
+        let arc = (Math.PI * 2) / sectors.length;
+        sectors.forEach((s, i) => {
+            ctx.beginPath(); ctx.fillStyle = s.c; ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 250, i*arc, (i+1)*arc); ctx.fill();
+            ctx.save(); ctx.translate(250, 250); ctx.rotate(i*arc + arc/2);
+            ctx.fillStyle = "#fff"; ctx.font = "bold 14px Orbitron"; ctx.fillText(s.n, 100, 5); ctx.restore();
+        });
+    }
+    draw();
+
+    // Lógica de Giro Sincronizada con la Flecha
+    function startSpin() {
+    if (isSpinning) return;
+    if (tokens < 2) return alert("Necesitas 2 Tokens.");
+
+    tokens -= 2; 
+    sync();
+    isSpinning = true;
+    document.getElementById("status-msg").innerText = "GIRANDO...";
+
+    // 1. Decidir ganador
+    let r = Math.random();
+    let s = 0; 
+    let win = 0;
+    for (let i = 0; i < sectors.length; i++) {
+        s += sectors[i].prob;
+        if (r < s) { 
+            win = i; 
+            break; 
+        }
+    }
+
+    // 2. Lógica de la Flecha (Sincronización arriba)
+    let gradosSector = 360 / sectors.length;
+    let vueltasBase = 360 * 10;
+    
+    // Calculamos para que el centro del premio quede a 270 grados (donde está tu flecha)
+    let destino = (360 - (win * gradosSector)) - (gradosSector / 2);
+    rotation += vueltasBase + ((destino + 270) - (rotation % 360) + 360) % 360;
+
+    const canvasRuleta = document.getElementById("canvas");
+    canvasRuleta.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
+    canvasRuleta.style.transform = `rotate(${rotation}deg)`;
+
+    // 3. Mostrar resultado
+    setTimeout(() => {
+        isSpinning = false;
+        let premioFinal = sectors[win].n;
+        document.getElementById("status-msg").innerText = "¡GANASTE: " + premioFinal + "!";
+        
+        setTimeout(() => {
+            window.open(`https://wa.me/${WHATSAPP}?text=Gané ${premioFinal} en la ruleta!`, "_blank");
+        }, 1000);
+    }, 5000);
 }
 
-function closePayment() {
-  document.getElementById("paymentModal").style.display = "none";
-}
 
-// BOTON PAYPAL
-document.getElementById("payPalBtn").onclick = () => {
-  const link = paypalLinks[currentBundle];
-  if (link.includes("AQUI_PEGAS")) {
-    alert("⚠️ Aún no has puesto el link PayPal de este bundle.");
-  } else {
-    window.open(link, "_blank");
-  }
-};
-
-// BOTON WHATSAPP
-document.getElementById("wsBtn").onclick = () => {
-  const mensaje = encodeURIComponent("Hola, quiero comprar el Bundle #" + currentBundle);
-  window.open(`https://wa.me/+50373826693?text=${mensaje}`, "_blank");
-};
-</script>
-
-</div>
-
-</div>
-</div>
-
-<script>
-
-/* ABRIR */
-document.getElementById("floatingBubble").onclick = () => {
-document.getElementById("wheelContainer").style.display = "flex";
-};
-
-/* SALIR */
-document.getElementById("closeWheel").onclick = () => {
-document.getElementById("wheelContainer").style.display = "none";
-};
-
-/* RULETA */
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
-
-const sections = [
-"💎 500 diamantes ff (Free)",
-"PERDISTE",
-"Descuento de robux",
-"Descuento de diamantes free fire"
-];
-
-const colors = ["#fff4c2","#fff","#f7e35b","#f1d67a"];
-
-/* DIBUJAR RULETA */
-function drawWheel() {
-let start = 0;
-let arc = Math.PI * 2 / sections.length;
-
-for (let i = 0; i < sections.length; i++) {
-ctx.beginPath();
-ctx.fillStyle = colors[i];
-ctx.moveTo(150,150);
-ctx.arc(150,150,150,start,start+arc);
-ctx.fill();
-
-ctx.save();
-ctx.translate(150,150);
-ctx.rotate(start + arc/2);
-ctx.fillStyle = "black";
-ctx.font = "bold 17px Arial";
-ctx.fillText(sections[i], 20, 5);
-ctx.restore();
-
-start += arc;
-}
-}
-
-drawWheel();
-
-/* SPIN */
-let spinning = false;
-
-document.getElementById("spinBtn").onclick = spin;
-
-function spin() {
-if (spinning) return;
-if (!canSpin()) return;
-
-spinning = true;
-
-/* ANGULO PERO IMPOSIBLE QUE CAIGA EN 500 Diamantes*/
-let safeAngles = [1, 2, 3]; // evita el primer sector
-let pick = safeAngles[Math.floor(Math.random()*safeAngles.length)];
-
-let angle = pick * 90 + 720;
-
-canvas.style.transition = "transform 4s ease-out";
-canvas.style.transform = `rotate(${angle}deg)`;
-
-setTimeout(()=>{
-spinning = false;
-
-let index = pick % 4;
-let prize = sections[index];
-
-handlePrize(prize);
-saveSpin();
-
-},4000);
-}
-
-/* TIEMPO 24 HORAS */
-const CD = 24 * 60 * 60 * 1000;
-
-function saveSpin(){
-localStorage.setItem("lastSpin", Date.now());
-}
-
-function canSpin(){
-let last = localStorage.getItem("lastSpin");
-if (!last) return true;
-return Date.now() - last >= CD;
-}
-
-setInterval(()=>{
-let btn = document.getElementById("spinBtn");
-let cd = document.getElementById("cooldown");
-
-if (canSpin()) {
-btn.disabled = false;
-cd.innerText = "";
-} else {
-btn.disabled = true;
-let diff = CD - (Date.now() - localStorage.getItem("lastSpin"));
-let h = Math.floor(diff/3600000);
-let m = Math.floor((diff%3600000)/60000);
-let s = Math.floor((diff%60000)/1000);
-cd.innerText = `${h}h ${m}m ${s}s`;
-}
-
-},1000);
-
-/* RESULTADOS */
-function handlePrize(prize){
-let r = document.getElementById("result");
-
-if (prize.includes("500")) {
-r.innerText = "Casi!";
-return;
-}
-
-if (prize === "PERDISTE"){
-r.innerText = "PERDISTE 🙃";
-return;
-}
-
-if (prize === "Descuento en robux"){
-r.innerText = "Descuento Robux Win ";
-window.open("https://wa.me/50373826693?text=Obtuve%20Descuento%20robux", "_blank");
-return;
-}
-
-if (prize === "Descuento de Diamantes ff"){
-r.innerText = "RECIBISTE DESCUENTO de diamantes";
-window.open("https://wa.me/50373826693?text=Gané Descuento De diamantes Por $7.99", "_blank");
-return;
-}
-
-}
-
-/* CASILLAS → WhatsApp */
-function buy(name, price){
-window.open(
-`https://wa.me/50373826693?text=Quiero%20comprar%20${name}%20por%20$${price}`,
-"_blank"
-);
-}
+    function openWheel() {
+        let o = document.getElementById("overlay");
+        o.style.display = (o.style.display == "flex") ? "none" : "flex";
+    }
 </script>
 
 
-<style>
-/* ================== BURBUJAS ================== */
-.vip-badge{
-  position:absolute;
-  right:15px;
-  padding:15px 18px;
-  border-radius:18px;
-  cursor:pointer;
-  text-align:center;
-  animation: float 2.3s ease-in-out infinite;
-  box-shadow:0 0 20px rgba(255,255,255,.4);
-}
-.vip-badge-text{font-weight:900;font-size:17px;}
-.vip-badge-sub{font-size:10px;font-weight:bold;}
 
-.vip-bronce{
-  top:70px;
-  background:linear-gradient(135deg,#ff8c1a,#8b4513);
-}
-.vip-gold{
-  top:145px;
-  background:linear-gradient(135deg,#fff700,#bdbdbd);
-}
-.vip-ultra{
-  top:220px;
-  background:linear-gradient(135deg,#00eaff,#0051ff);
-}
 
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-7px)}
-}
 
-/* ================== BRILLO ULTRA ================== */
-.ultra-shine{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg,transparent,rgba(255,255,255,.9),transparent);
-  animation: shine 2s infinite;
-}
-@keyframes shine{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(100%)}
-}
 
-/* ================== MODAL ================== */
-.vip-modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#000000dd;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
 
-/* ================== TARJETAS ================== */
-.vip-card{
-  width:90%;
-  max-width:370px;
-  padding:24px;
-  border-radius:18px;
-  color:#ffffff;
-  animation: pop .45s ease;
-  box-shadow:0 0 30px rgba(255,255,255,.25);
-}
-
-.bronce-card{
-  background:linear-gradient(135deg,#b87333,#7a3e00);
-  border:3px solid #ffb347;
-}
-.gold-card{
-  background:linear-gradient(135deg,#ffd700,#9e9e9e);
-  border:3px solid #fff176;
-}
-.ultra-card{
-  background:linear-gradient(135deg,#001d3d,#003566,#00eaff);
-  border:3px solid #7df9ff;
-  box-shadow:0 0 40px #00eaff;
-  animation: pop .4s ease, pulse 2s infinite;
-}
-
-.vip-card ul{
-  text-align:left;
-  font-size:15px;
-  margin-top:10px;
-}
-
-.vip-card button{
-  width:100%;
-  margin-top:12px;
-  padding:13px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-}
-.vip-card button:first-of-type{
-  background:#00ff88;
-  color:#000;
-}
-.vip-card button:last-of-type{
-  background:#004cff;
-  color:#fff;
-}
-
-@keyframes pop{
-  from{transform:scale(.65);opacity:0}
-  to{transform:scale(1);opacity:1}
-}
-@keyframes pulse{
-  0%,100%{box-shadow:0 0 30px #00eaff}
-  50%{box-shadow:0 0 55px #7df9ff}
-}
-</style>
-
-<script>
-function openVIP(id){
-  document.getElementById(id).style.display="flex";
-}
-function closeVIP(id){
-  document.getElementById(id).style.display="none";
-}
-function vipWhats(vip,precio){
-  const msg = encodeURIComponent(
-    `Hola, quiero comprar el ${vip} por $${precio}`
-  );
-  window.open(`https://wa.me/50373826693?text=${msg}`,"_blank");
-}
-</script>
-</body>
-</html>
-
-<style>
-/* ========= PALETA AZUL + NEGRO ========= */
-:root{
-  --pure-black:#000000;
-  --deep-black:#050607;
-  --dark-black:#0a0b0d;
-
-  --neon-blue:#00bfff;
-  --electric-blue:#007bff;
-  --dark-blue:#0a1f33;
-}
-
-/* BURBUJA */
-#floatingBubble{
-  background:linear-gradient(135deg,var(--neon-blue),var(--electric-blue)) !important;
-  box-shadow:0 0 22px rgba(0,191,255,.9) !important;
-}
-
-/* OVERLAY RULETA */
-#wheelContainer{
-  background:radial-gradient(circle at top,var(--dark-blue),var(--pure-black)) !important;
-}
-
-/* CAJA RULETA */
-#wheelBox{
-  background:linear-gradient(160deg,var(--dark-black),var(--deep-black)) !important;
-  box-shadow:0 0 35px rgba(0,191,255,.4) !important;
-}
-
-/* RULETA */
-#wheel{
-  border-color:var(--neon-blue) !important;
-  box-shadow:
-    0 0 26px rgba(0,191,255,.85),
-    inset 0 0 30px rgba(0,191,255,.25) !important;
-}
-
-/* FLECHA */
-#pointer{
-  color:var(--neon-blue) !important;
-  text-shadow:0 0 14px rgba(0,191,255,1) !important;
-}
-
-/* BOTÓN GIRAR */
-#spinBtn{
-  background:linear-gradient(135deg,var(--neon-blue),var(--electric-blue)) !important;
-  color:#000 !important;
-  box-shadow:0 0 25px rgba(0,191,255,1) !important;
-}
-
-/* RESULTADO */
-#result{
-  color:var(--neon-blue) !important;
-  text-shadow:0 0 10px rgba(0,191,255,.8);
-}
-
-/* CASILLAS */
-.buyBox{
-  background:linear-gradient(145deg,var(--dark-blue),var(--pure-black)) !important;
-  border-color:var(--neon-blue) !important;
-  color:var(--neon-blue) !important;
-  box-shadow:0 0 18px rgba(0,191,255,.4);
-}
-
-/* BUNDLES */
-.bundle{
-  background:linear-gradient(160deg,var(--dark-blue),var(--pure-black)) !important;
-  border-color:var(--neon-blue) !important;
-  box-shadow:0 0 22px rgba(0,191,255,.5) !important;
-}
-.bundle h2{
-  color:var(--neon-blue) !important;
-}
-.bundle button{
-  background:linear-gradient(135deg,var(--neon-blue),var(--electric-blue)) !important;
-  color:#000 !important;
-}
-
-/* MODALES */
-.modal-box,
-.vip-card,
-.vip-pay-card{
-  background:linear-gradient(160deg,var(--dark-blue),var(--pure-black)) !important;
-  border-color:var(--neon-blue) !important;
-  box-shadow:0 0 30px rgba(0,191,255,.6) !important;
-}
-</style>
 
 <style>
 /* ====== Base y Reset ====== */
@@ -1291,6 +766,7 @@ button[class*="whatsapp"]{
 }
 </style>
 
+
 <!-- ===== POINTS HUD ===== -->
 <div id="topPoints">Points: <span id="robuxValue">0</span></div>
 
@@ -1366,6 +842,178 @@ function setRobuxPoints(amount){
   updatePoints(amount);
 }
 </script>
+
+<!-- ========= AUTH FX PRO (NO TOCAR) ========= -->
+<style>
+#authOverlay{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at top,#0a1a3a,#000);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  backdrop-filter:blur(6px);
+}
+
+.auth-box{
+  text-align:center;
+  color:#9fdcff;
+  font-family:Orbitron,Arial,sans-serif;
+  animation:fadeIn .5s ease;
+}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.hex-loader{
+  width:90px;
+  height:90px;
+  border:4px solid rgba(0,170,255,.15);
+  border-top:4px solid #00aaff;
+  border-radius:50%;
+  animation:spin 1s linear infinite, pulse 1.5s ease-in-out infinite;
+  margin:0 auto 15px;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 10px #00aaff}
+  50%{box-shadow:0 0 25px #00aaff}
+}
+
+#loaderText{
+  font-size:14px;
+  letter-spacing:1px;
+  animation:glitch 1.2s infinite;
+}
+
+@keyframes glitch{
+  0%{opacity:1}
+  20%{opacity:.7}
+  40%{opacity:1}
+  60%{opacity:.5}
+  80%{opacity:1}
+}
+
+#fxIcon{
+  width:110px;
+  height:110px;
+  display:none;
+  margin:20px auto;
+}
+
+#fxPath{
+  fill:none;
+  stroke-width:9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:400;
+  stroke-dashoffset:400;
+  animation:drawFX 1.4s cubic-bezier(.4,0,.2,1) forwards,
+             glow 1.2s ease-in-out infinite;
+}
+
+@keyframes drawFX{to{stroke-dashoffset:0}}
+@keyframes glow{
+  0%,100%{filter:drop-shadow(0 0 5px currentColor)}
+  50%{filter:drop-shadow(0 0 18px currentColor)}
+}
+
+#resultText{
+  font-size:14px;
+  margin-top:10px;
+  opacity:0;
+  animation:textIn .6s ease forwards;
+}
+
+@keyframes textIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+
+<div id="authOverlay">
+  <div class="auth-box">
+    <div class="hex-loader" id="loader"></div>
+    <div id="loaderText">ENCRIPTANDO DATOS…</div>
+
+    <svg id="fxIcon" viewBox="0 0 100 100">
+      <path id="fxPath"></path>
+    </svg>
+
+    <div id="resultText"></div>
+  </div>
+</div>
+
+<script>
+function startFX(){
+  authOverlay.style.display="flex";
+  loader.style.display="block";
+  loaderText.style.display="block";
+  fxIcon.style.display="none";
+  resultText.textContent="";
+}
+
+function errorFX(){
+  loader.style.display="none";
+  loaderText.style.display="none";
+  fxIcon.style.display="block";
+
+  fxPath.setAttribute("d","M25 25 L75 75 M75 25 L25 75");
+  fxPath.style.color="red";
+  fxPath.style.stroke="red";
+
+  resultText.textContent="Contraseña Incorrecta, Datos no correspondientes.";
+  resultText.style.color="red";
+
+  setTimeout(()=>authOverlay.style.display="none",3000);
+}
+
+function successFX(){
+  loader.style.display="none";
+  loaderText.style.display="none";
+  fxIcon.style.display="block";
+
+  fxPath.setAttribute("d","M20 55 L45 75 L80 30");
+  fxPath.style.color="#00ff9c";
+  fxPath.style.stroke="#00ff9c";
+
+  resultText.textContent="Datos Encriptados";
+  resultText.style.color="#00ff9c";
+}
+
+/* ===== LOGIN (MISMA FUNCIÓN, FX PRO) ===== */
+function login(){
+  const u = username.value.trim();
+  const p = password.value.trim();
+
+  startFX();
+
+  setTimeout(()=>{
+    const ok = users.find(x=>x.user===u && x.pass===p);
+
+    if(!ok){
+      errorFX();
+      return;
+    }
+
+    successFX();
+
+    setTimeout(()=>{
+      currentUser = ok.user;
+      robuxPoints = ok.points;
+      updatePoints(robuxPoints);
+
+      authOverlay.style.display="none";
+      loginScreen.style.display="none";
+      shop.style.display="block";
+    },1500);
+
+  },1500);
+}
+</script>
+
+
 <!-- BOTÓN FLOTANTE -->
 <div class="cart-float" onclick="toggleCarrito()">
   🛒 <span id="cartCount">0</span>
@@ -1441,6 +1089,7 @@ function setRobuxPoints(amount){
   font-weight:700;
   cursor:pointer;
 }
+
 .overlay{
   position:fixed;
   inset:0;
@@ -1568,8 +1217,8 @@ render();
 
 <!-- ====== CUADRO RANKING ====== -->
 <div class="install-box Ranking-box">
-  <div class="Ranking">
-    <span>Ranking de jugadores</span>
+  <div class="Strike Blocks for Android">
+    <span>Mini juegos</span>
   </div>
   <button onclick="openBuy()">Ver información</button>
 </div>
@@ -1578,24 +1227,30 @@ render();
 <div class="overlay" id="buyBox">
   <div class="buy-card">
 
-    <h2>Ranking de jugadores</h2>
+    <h2>Mini juegos × Gana robux</h2>
 
     <p class="desc" style="text-align:left;">
-      • <b>¿Para qué es este recuadro?</b><br>
-      R/ Para cuando uno se pregunte qué jugador, grupo o clan lleva la delantera con su total de dinero gastado en juegos.<br><br>
+      • <b>¿Que ganas con jugar?</b><br>
+      Recompensas De videojuegos!<br><br>
 
-      • <b>Tú puede que estés en el Ranking mejores jugadores.</b><br><br>
+      • <b>ADVERTENCIA ⚠️: estos puntos tienen límite de expiración de 5 días, además de obtener las recompensas esperar hasta 14 días</b><br><br>
 
-      • <b>¿Cómo puedes estar en el Ranking mejores jugadores?</b><br>
-      R/ Superando en dinero gastado en juegos en nuestra compañía 
-      <b>Soft Corporation Studios</b>.<br>
-      Este Ranking es desde el número <b>1</b> hasta el <b>99</b>.
+      • <b>¿Cómo puedo ver cuántos puntos Rblx tengo</b><br>
+      R/ abajo en un recuadro tipo B, burbuja 
+      <b>indica: Puntos Rblx</b>.<br>
+      Estos puede variar según vaya ganando Rblx puntos de<b>1</b> hasta el <b>99,999</b>.
     </p>
 
-    <p style="font-weight:bold;color:#c89b3c;">¿Quieres saber dónde apareces?</p>
+    <p style="font-weight:bold;color:#c89b3c;">Quieres saber cuántos puntos × recompensa: 
+
+| 899 puntos Rblx = 40 Robux Gratis
+| 1,899 puntos Rblx = 80 Robux Gratis 
+| 2,999 puntos Rblx = 120 robux gratis 
+
+</p>
 
     <button class="buy-btn" onclick="inspectRanking()">
-      Inspeccionar Mejores jugadores
+      JUGAR JUEGOS BY: SOFT CORPORATIÓN 
     </button>
 
     <button class="close-btn" onclick="closeBuy()">Cerrar</button>
@@ -1743,7 +1398,7 @@ function inspectRanking(){
 
   setTimeout(()=>{
     window.location.href =
-    "https://soft-technology-studios-llc.github.io/TOP-Ranking-LLC/";
+    "https://soft-technology-studios-llc.github.io/Strike-Blocks-For-Android/";
   },3000);
 }
 
@@ -2103,7 +1758,7 @@ border-radius:8px;
     Comprar WhatsApp
   </button>
 
-  <button class="btn" onclick="window.open('https://wa.me/50373826693?text=Quiero%20ver%20paquetes%20especiales','_blank')">
+<button class="btn" onclick="window.open('https://wa.me/50373826693?text=Quiero%20ver%20paquetes%20especiales','_blank')">
     Paquetes Especiales solo por WhatsApp
   </button>
 
@@ -2137,7 +1792,8 @@ border-radius:8px;
   <button class="btn" onclick="window.open('https://wa.me/50373826693?text=Quiero%20comprar%20bundle%20especial:%202,000%20robux%20+%20Láser%20Gun%20×%20Steal%20a%20Brainrot%20por%20$36.49','_blank')">
     Comprar WhatsApp
   </button>
-<button class="btn" onclick="window.open('https://wa.me/50373826693?text=Quiero%20ver%20paquetes%20especiales','_blank')">
+
+  <button class="btn" onclick="window.open('https://wa.me/50373826693?text=Quiero%20ver%20paquetes%20especiales','_blank')">
     Paquetes Especiales solo por WhatsApp
   </button>
 
